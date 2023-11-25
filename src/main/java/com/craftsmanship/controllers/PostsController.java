@@ -3,6 +3,8 @@ package com.craftsmanship.controllers;
 import com.craftsmanship.entities.Posts;
 import com.craftsmanship.exceptions.InternalServerErrorException;
 import com.craftsmanship.repositories.PostsRepository;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,7 @@ public class PostsController {
     }
 
     @PostMapping
-    public ResponseEntity<Posts> addPost(String userId) {
+    public ResponseEntity<Posts> addPost(@NotNull @NotEmpty String userId) {
         try {
             Posts post = new Posts();
             post.setUserId(userId);

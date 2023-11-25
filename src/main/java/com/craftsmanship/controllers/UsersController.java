@@ -3,6 +3,9 @@ package com.craftsmanship.controllers;
 import com.craftsmanship.entities.Users;
 import com.craftsmanship.exceptions.InternalServerErrorException;
 import com.craftsmanship.repositories.UsersRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +26,7 @@ public class UsersController {
     }
 
     @PostMapping
-    public ResponseEntity<Users> addUsers(String userName) {
+    public ResponseEntity<Users> addUsers(@Valid @NotNull @NotEmpty String userName) {
         try {
             Users user = new Users();
             user.setUserName(userName);

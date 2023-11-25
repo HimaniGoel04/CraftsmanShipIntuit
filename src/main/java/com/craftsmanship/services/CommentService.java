@@ -7,6 +7,7 @@ import com.craftsmanship.exceptions.AccessDeniedException;
 import com.craftsmanship.exceptions.InternalServerErrorException;
 import com.craftsmanship.exceptions.ResourceNotFoundException;
 import com.craftsmanship.models.CommentRequest;
+import com.craftsmanship.models.CommentResponse;
 import com.craftsmanship.models.EditCommentRequest;
 import com.craftsmanship.models.ReactionRequest;
 import com.craftsmanship.repositories.CommentsRepository;
@@ -50,11 +51,11 @@ public class CommentService {
         }
     }
 
-    public Comments addComment(CommentRequest commentRequest) {
+    public CommentResponse addComment(CommentRequest commentRequest) {
         try {
             Comments comment = CommonUtils.copyObjectProperties(commentRequest, Comments.class);
             if(comment!=null) {
-                return commentsRepository.save(comment);
+                return CommonUtils.copyObjectProperties(commentsRepository.save(comment),CommentResponse.class);
             }
         } catch (Exception exception) {
             throw new InternalServerErrorException("Something went wrong while adding comment: " + commentRequest);
@@ -62,14 +63,14 @@ public class CommentService {
         return null;
     }
 
-    public Comments editComment(EditCommentRequest editCommentRequest) {
+    public CommentResponse editComment(EditCommentRequest editCommentRequest) {
         Comments oldComment = getComment(editCommentRequest.getCommentId());
         if (!oldComment.getCommentBy().equals(editCommentRequest.getCommentBy())) {
             throw new AccessDeniedException(editCommentRequest.getCommentBy() + " is not authorized to edit this comment");
         }
         try {
             oldComment.setCommentText(editCommentRequest.getNewComment());
-            return commentsRepository.save(oldComment);
+            return CommonUtils.copyObjectProperties(commentsRepository.save(oldComment),CommentResponse.class);
         } catch (Exception exception) {
             throw new InternalServerErrorException("Something went wrong while adding comment: " + oldComment);
         }
