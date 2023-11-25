@@ -37,27 +37,35 @@ public class ReactionService {
     }
 
     public void addReaction(ReactionRequest reactionRequest) {
-        commentService.increaseReactionCount(reactionRequest);
+        Thread t1=new Thread(()->commentService.increaseReactionCount(reactionRequest));
+        Thread t2 = new Thread(saveReactionRunnable(reactionRequest));
+        t1.start();
         try {
-            Reactions reaction = CommonUtils.copyObjectProperties(reactionRequest, Reactions.class);
-            if(reaction!=null) {
-                reactionRepository.save(reaction);
-            }
+            t2.start();
         } catch (Exception exception) {
             throw new InternalServerErrorException("Failed to add reaction on comment: " + reactionRequest);
         }
     }
 
     public void editReaction(ReactionRequest reactionRequest) {
-        setReactionCountOnAddingReaction(reactionRequest);
+        Thread t1=new Thread(()->setReactionCountOnAddingReaction(reactionRequest));
+        Thread t2 = new Thread(saveReactionRunnable(reactionRequest));
+        t1.start();
         try {
+            t2.start();
+        } catch (Exception exception) {
+            throw new InternalServerErrorException("Failed to add reaction on comment: " + reactionRequest);
+        }
+
+    }
+
+    private Runnable saveReactionRunnable(ReactionRequest reactionRequest) {
+        return () ->{
             Reactions reaction = CommonUtils.copyObjectProperties(reactionRequest, Reactions.class);
             if(reaction!=null) {
                 reactionRepository.save(reaction);
             }
-        } catch (Exception exception) {
-            throw new InternalServerErrorException("Failed to add reaction on comment: " + reactionRequest);
-        }
+        };
     }
 
     public void deleteReaction(ReactionId reactionId) {
