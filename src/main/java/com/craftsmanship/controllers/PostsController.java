@@ -9,13 +9,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/post")
 public class PostsController {
     private final PostsRepository postsRepository;
 
@@ -23,7 +21,7 @@ public class PostsController {
         this.postsRepository = postsRepository;
     }
 
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<Posts> addPost(@NotNull @NotEmpty String userId) {
         try {
             Posts post = new Posts();
@@ -35,7 +33,7 @@ public class PostsController {
 
     }
 
-    @GetMapping
+    @GetMapping("/posts")
     public ResponseEntity<List<Posts>> getAllPosts() {
         try {
             return new ResponseEntity<>(postsRepository.findAll(), HttpStatusCode.valueOf(200));

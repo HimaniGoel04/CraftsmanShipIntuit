@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reactions")
 public class ReactionController {
 
     private final ReactionService reactionService;
@@ -24,20 +23,20 @@ public class ReactionController {
         this.reactionService = reactionService;
     }
 
-    @GetMapping
+    @GetMapping("/reaction/users")
     public ResponseEntity<List<Users>> getUsersReactedOnComment(@NotNull @NotEmpty @RequestParam String commentId,
                                                                 @NotNull @NotEmpty @RequestParam ReactionType reactionType) {
         List<Users> usersReactingOnComment = reactionService.getUsersReactingOnComment(commentId, reactionType);
         return new ResponseEntity<>(usersReactingOnComment, HttpStatusCode.valueOf(200));
     }
 
-    @PostMapping
+    @PostMapping("/reaction")
     public ResponseEntity<Void> addReaction(@Valid @RequestBody ReactionRequest reaction) {
         reactionService.editReaction(reaction);
         return new ResponseEntity<>(HttpStatusCode.valueOf(200));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/reaction")
     public ResponseEntity<Void> deleteReaction(@Valid @RequestBody ReactionId reactionId) {
         reactionService.deleteReaction(reactionId);
         return new ResponseEntity<>(HttpStatusCode.valueOf(200));
